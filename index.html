@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carlos Martinez — Videographer & Content Creator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0a0905;
+  --white: #ffffff;
+  --muted: rgba(255,255,255,0.38);
+  --dimmed: rgba(255,255,255,0.18);
+  --accent: #c8472a;
+  --border: rgba(255,255,255,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* ─── CURSOR ─────────────────────────────── */
+.cursor {
+  position: fixed; width: 6px; height: 6px;
+  background: white; border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.12s, background 0.2s;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 50%; pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: opacity 0.2s;
+}
+
+/* ─── NAV (fixed) ────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.8rem 2.4rem;
+  mix-blend-mode: normal;
+  transition: background 0.4s;
+}
+nav.scrolled { background: rgba(10,9,5,0.85); backdrop-filter: blur(12px); }
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 0.06em;
+  color: white; text-decoration: none;
+  opacity: 0.85;
+}
+.nav-links { display: flex; gap: 2.2rem; list-style: none; }
+.nav-links a {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; color: var(--muted); font-weight: 300;
+  transition: color 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: white; }
+
+/* ─── HERO ───────────────────────────────── */
+#hero {
+  position: relative; height: 100vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.hero-gradient {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 25% 65%, #3d2510 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 75% 25%, #12202e 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 50% 85%, #1a1005 0%, transparent 50%),
+    #0a0905;
+}
+.hero-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 120% 120% at 50% 50%, transparent 30%, rgba(0,0,0,0.72) 100%);
+}
+.hero-grain {
+  position: absolute; inset: -50%; width: 200%; height: 200%;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.4s steps(1) infinite;
+}
+@keyframes grain {
+  0%  { transform:translate(0,0); }
+  25% { transform:translate(-2%,-3%); }
+  50% { transform:translate(3%,1%); }
+  75% { transform:translate(-1%,2%); }
+}
+
+.hero-content {
+  position: relative; z-index: 10;
+  flex: 1; display: flex; align-items: flex-start;
+  padding: 5.5rem 1.5rem 0;
+}
+
+.hero-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 8vw, 120px);
+  line-height: 0.87; letter-spacing: -0.02em;
+  color: white; mix-blend-mode: overlay;
+  user-select: none; white-space: nowrap;
+  animation: heroIn 1s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero-tagline {
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--dimmed); margin-top: 1.1rem; font-weight: 300;
+  animation: heroIn 1s 0.25s both;
+}
+
+.reel-btn {
+  position: absolute; right: 2.2rem; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  cursor: pointer; animation: heroIn 1s 0.55s both;
+}
+.play-circle {
+  width: 54px; height: 54px;
+  border: 1px solid rgba(255,255,255,0.22); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.3s, transform 0.4s;
+}
+.reel-btn:hover .play-circle { border-color: rgba(255,255,255,0.85); transform: scale(1.1); }
+.play-tri {
+  width:0; height:0; border-style:solid;
+  border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent rgba(255,255,255,0.75);
+  margin-left:4px;
+}
+.reel-label { font-size:9px; letter-spacing:.22em; text-transform:uppercase; color:var(--dimmed); }
+
+.hero-bottom {
+  position: relative; z-index: 10;
+  display: flex; align-items: center;
+  padding: 1.6rem 2.4rem;
+  animation: heroIn 1s 0.45s both;
+}
+.dots { display:flex; gap:8px; align-items:center; }
+.dot {
+  width:5px; height:5px; border-radius:50%;
+  background:rgba(255,255,255,0.22); cursor:pointer;
+  transition: background .25s, transform .25s;
+}
+.dot.active { background:white; transform:scale(1.4); }
+.scroll-label {
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--muted);
+  animation: scrollPulse 2.8s ease-in-out infinite;
+}
+@keyframes scrollPulse { 0%,100%{opacity:.38} 50%{opacity:.9} }
+.hero-copy { margin-left:auto; display:flex; gap:1.2rem; align-items:center; font-size:10px; letter-spacing:.15em; color:var(--dimmed); }
+.slash { opacity:.5; font-size:13px; }
+
+.side-text {
+  position: fixed; right:.9rem; top:50%;
+  transform: translateY(-50%) rotate(90deg);
+  font-size:8.5px; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--dimmed); white-space:nowrap; z-index:20; pointer-events:none;
+}
+
+/* ─── SECTION SHARED ─────────────────────── */
+.section-eyebrow {
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:2.5rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.section-eyebrow::after {
+  content:''; width:40px; height:1px;
+  background:rgba(255,255,255,0.15);
+}
+
+.reveal {
+  opacity:0; transform:translateY(28px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.reveal.visible { opacity:1; transform:none; }
+
+/* ─── WORK ───────────────────────────────── */
+#work {
+  padding: 7rem 2.4rem 5rem;
+  border-top: 1px solid var(--border);
+}
+
+.work-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 3.5rem;
+}
+.work-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 1; letter-spacing: 0.02em;
+}
+.work-count { font-size:11px; letter-spacing:.12em; color:var(--muted); }
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.07);
+}
+
+.work-item {
+  position: relative; aspect-ratio: 4/5;
+  overflow: hidden; cursor: pointer;
+  background: #111;
+}
+.work-item-bg {
+  width:100%; height:100%;
+  transition: transform .7s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.work-item:hover .work-item-bg { transform: scale(1.06); }
+
+.wb1 { background: linear-gradient(145deg,#1e0d07 0%,#5a2010 50%,#3a1508 100%); }
+.wb2 { background: linear-gradient(145deg,#07101e 0%,#102050 50%,#081530 100%); }
+.wb3 { background: linear-gradient(145deg,#0d1a0d 0%,#1a4020 50%,#0d2010 100%); }
+.wb4 { background: linear-gradient(145deg,#1a1a07 0%,#4a4510 50%,#2a2808 100%); }
+.wb5 { background: linear-gradient(145deg,#1a0718 0%,#4a1545 50%,#300a2e 100%); }
+.wb6 { background: linear-gradient(145deg,#0f0f0f 0%,#2a2a2a 50%,#181818 100%); }
+
+.work-overlay {
+  position:absolute; inset:0; padding:1.4rem;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, transparent 55%);
+  opacity:0; transition: opacity .35s;
+}
+.work-item:hover .work-overlay { opacity:1; }
+
+.work-client { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:4px; }
+.work-name { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.04em; }
+
+.work-num {
+  position:absolute; top:1rem; left:1rem;
+  font-size:10px; letter-spacing:.15em; color:rgba(255,255,255,.2);
+}
+
+.work-item-wide {
+  grid-column: span 2;
+  aspect-ratio: 8/5;
+}
+
+/* ─── ABOUT ──────────────────────────────── */
+#about {
+  padding: 7rem 2.4rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.about-left { position: sticky; top: 7rem; }
+
+.about-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px,7vw,86px);
+  line-height: 0.92; letter-spacing: 0.02em;
+  margin-bottom: 2.5rem;
+}
+.about-heading em { font-style:italic; color:var(--accent); font-family:'DM Sans',sans-serif; font-weight:300; font-size:0.55em; display:block; letter-spacing:.12em; text-transform:uppercase; margin-bottom:.5rem; }
+
+.stat-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+.stat {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.stat:nth-child(odd) { border-right: 1px solid var(--border); padding-right: 1.5rem; }
+.stat:nth-child(even) { padding-left: 1.5rem; }
+
+.stat-n {
+  font-family:'Bebas Neue',sans-serif;
+  font-size: 42px; line-height:1; color:white;
+}
+.stat-l { font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:3px; }
+
+.about-body p {
+  font-size:14px; line-height:1.85; color:rgba(255,255,255,.58);
+  margin-bottom:1.4rem; font-weight:300;
+}
+.about-body p strong { color:rgba(255,255,255,.85); font-weight:400; }
+
+.skill-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:2.5rem; }
+.pill {
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  border: 1px solid rgba(255,255,255,.15); padding:6px 14px;
+  color:var(--muted); transition:border-color .2s,color .2s; cursor:default;
+}
+.pill:hover { border-color:rgba(255,255,255,.5); color:white; }
+
+/* ─── SERVICES ───────────────────────────── */
+#services {
+  padding: 7rem 2.4rem;
+  border-top: 1px solid var(--border);
+}
+
+.services-top {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:4rem; align-items:end; margin-bottom:4rem;
+}
+.services-heading {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,7vw,86px);
+  line-height:.92; letter-spacing:.02em;
+}
+.services-desc { font-size:13px; color:rgba(255,255,255,.5); line-height:1.8; font-weight:300; }
+
+.services-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1.5px; background:var(--border);
+  border:1.5px solid var(--border);
+}
+
+.svc {
+  background:var(--ink);
+  padding:2.8rem 2rem 2.2rem;
+  transition:background .4s;
+  cursor:default;
+}
+.svc:hover { background:#14120e; }
+
+.svc-num { font-size:10px; letter-spacing:.2em; color:var(--dimmed); margin-bottom:1.6rem; }
+.svc-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px; letter-spacing:.03em; margin-bottom:1rem;
+  transition:color .3s;
+}
+.svc-desc { font-size:12px; color:rgba(255,255,255,.45); line-height:1.85; font-weight:300; }
+
+.svc-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:1.6rem; }
+.svc-tag {
+  font-size:9px; letter-spacing:.1em; text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.1); padding:4px 10px;
+  color:var(--dimmed); transition:border-color .3s,color .3s;
+}
+.svc:hover .svc-tag { border-color:rgba(255,255,255,.2); color:rgba(255,255,255,.45); }
+
+/* ─── CONTACT ────────────────────────────── */
+#contact {
+  padding: 8rem 2.4rem 6rem;
+  border-top: 1px solid var(--border);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; min-height:75vh;
+  position:relative; overflow:hidden;
+}
+
+.contact-bg-word {
+  position:absolute;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(100px,20vw,280px);
+  letter-spacing:.02em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,255,255,.05);
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  white-space:nowrap; pointer-events:none;
+  user-select:none;
+}
+
+.contact-inner { position:relative; z-index:1; }
+
+.contact-eyebrow { font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:1.8rem; }
+
+.contact-heading {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,9vw,110px);
+  line-height:.9; letter-spacing:.02em;
+  margin-bottom:1.2rem;
+}
+.contact-heading span { color:var(--accent); }
+
+.contact-sub { font-size:13px; color:rgba(255,255,255,.45); max-width:380px; line-height:1.8; margin:0 auto 3rem; font-weight:300; }
+
+.contact-email {
+  display:inline-block;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(20px,2.8vw,32px); letter-spacing:.04em;
+  color:white; text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.25);
+  padding-bottom:5px; transition:color .25s, border-color .25s;
+  margin-bottom:4rem;
+}
+.contact-email:hover { color:var(--accent); border-color:var(--accent); }
+
+.contact-socials { display:flex; gap:3rem; justify-content:center; list-style:none; }
+.contact-socials a {
+  font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; transition:color .2s;
+}
+.contact-socials a:hover { color:white; }
+
+/* ─── FOOTER ─────────────────────────────── */
+footer {
+  padding:1.6rem 2.4rem;
+  border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--dimmed);
+}
+
+/* ─── RESPONSIVE ─────────────────────────── */
+@media(max-width:900px){
+  #about { grid-template-columns:1fr; gap:3rem; }
+  .about-left { position:static; }
+  .work-grid { grid-template-columns:1fr 1fr; }
+  .work-item-wide { grid-column:span 2; }
+  .services-top { grid-template-columns:1fr; gap:2rem; }
+  .services-grid { grid-template-columns:1fr; }
+  nav { padding:1.5rem 1.5rem; }
+  #work, #about, #services, #contact { padding-left:1.5rem; padding-right:1.5rem; }
+}
+@media(max-width:600px){
+  .work-grid { grid-template-columns:1fr; }
+  .work-item-wide { grid-column:span 1; aspect-ratio:4/5; }
+  .nav-links { display:none; }
+  .stat-row { grid-template-columns:1fr; }
+  .stat:nth-child(odd) { border-right:none; padding-right:0; }
+  .stat:nth-child(even) { padding-left:0; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">CM</a>
+  <ul class="nav-links">
+    <li><a href="#work" class="active">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg">
+    <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" src="new_website_video.mp4"></video>
+    <div class="hero-gradient" style="z-index:1;opacity:0.45;"></div>
+    <div class="hero-vignette" style="z-index:2;"></div>
+    <div class="hero-grain" style="z-index:3;"></div>
+  </div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-name">CARLOS MARTINEZ</div>
+      <p class="hero-tagline">Videographer &amp; Content Creator · London</p>
+    </div>
+    <div class="reel-btn">
+      <div class="play-circle"><div class="play-tri"></div></div>
+      <span class="reel-label">Showreel</span>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <span class="scroll-label">Scroll</span>
+    <div class="hero-copy">
+      <span class="slash">//</span>
+      <span>©2026</span>
+    </div>
+  </div>
+</section>
+
+<div class="side-text">Nissan · BBC · Haig Club · Campari · Rémy Martin</div>
+
+<!-- ══ WORK ══════════════════════════════════ -->
+<section id="work" class="reveal">
+  <div class="work-header">
+    <div class="section-eyebrow">Selected work</div>
+    <span class="work-count">06 projects</span>
+  </div>
+  <h2 class="work-title" style="margin-bottom:3rem">RECENT<br>PROJECTS</h2>
+
+  <div class="work-grid">
+    <div class="work-item work-item-wide">
+      <div class="work-item-bg wb1"></div>
+      <span class="work-num">01</span>
+      <div class="work-overlay">
+        <p class="work-client">Haig Club × David Beckham</p>
+        <p class="work-name">Brand Campaign Film</p>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-item-bg wb2"></div>
+      <span class="work-num">02</span>
+      <div class="work-overlay">
+        <p class="work-client">Nissan</p>
+        <p class="work-name">Automotive Commercial</p>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-item-bg wb3"></div>
+      <span class="work-num">03</span>
+      <div class="work-overlay">
+        <p class="work-client">BBC</p>
+        <p class="work-name">Broadcast Feature</p>
+      </div>
+    </div>
+    <div class="work-item">
+      <div class="work-item-bg wb4"></div>
+      <span class="work-num">04</span>
+      <div class="work-overlay">
+        <p class="work-client">Rémy Martin</p>
+        <p class="work-name">Brand Film</p>
+      </div>
+    </div>
+    <div class="work-item work-item-wide">
+      <div class="work-item-bg wb5"></div>
+      <span class="work-num">05</span>
+      <div class="work-overlay">
+        <p class="work-client">Campari</p>
+        <p class="work-name">Social Campaign Series</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══════════════════════════════════ -->
+<section id="about" class="reveal">
+  <div class="about-left">
+    <div class="section-eyebrow">About</div>
+    <h2 class="about-heading">
+      <em>Decade of</em>
+      VISUAL<br>CRAFT
+    </h2>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-n">10+</div><div class="stat-l">Years experience</div></div>
+      <div class="stat"><div class="stat-n">5+</div><div class="stat-l">Brand credits</div></div>
+      <div class="stat"><div class="stat-n">2</div><div class="stat-l">Languages</div></div>
+      <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Stories to tell</div></div>
+    </div>
+  </div>
+
+  <div class="about-body">
+    <div class="section-eyebrow" style="opacity:0">&nbsp;</div>
+    <p>London-based freelance videographer and content creator with over a decade of commercial experience. I've produced work for some of the world's most recognisable brands — from Nissan to Rémy Martin, BBC to David Beckham's Haig Club. <strong>Every project starts with a story.</strong></p>
+    <p>My approach is cinematic by instinct and strategic by design. I see every brief as a narrative waiting to be shaped — with texture, rhythm, and a clear point of view. Bilingual in English and Spanish, I bring versatility across markets and cultures.</p>
+    <p>I shoot on Sony systems and work across DaVinci Resolve, Premiere Pro, After Effects, Photoshop, and Lightroom. Currently available for new commercial projects, retainers, and in-house or agency roles.</p>
+    <div class="skill-pills">
+      <span class="pill">Sony Systems</span>
+      <span class="pill">DaVinci Resolve</span>
+      <span class="pill">Premiere Pro</span>
+      <span class="pill">After Effects</span>
+      <span class="pill">Photoshop</span>
+      <span class="pill">Lightroom</span>
+      <span class="pill">Short-form</span>
+      <span class="pill">Brand Films</span>
+      <span class="pill">Content Strategy</span>
+      <span class="pill">English / Español</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ════════════════════════════════ -->
+<section id="services" class="reveal">
+  <div class="services-top">
+    <div>
+      <div class="section-eyebrow">Services</div>
+      <h2 class="services-heading">WHAT I<br>BRING</h2>
+    </div>
+    <p class="services-desc">Every engagement is tailored. Whether you need a single shoot day or an ongoing creative partnership — I work at the intersection of craft and strategy, delivering work that performs as well as it looks.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="svc">
+      <div class="svc-num">01</div>
+      <h3 class="svc-name">Brand Videography</h3>
+      <p class="svc-desc">Commercial films, product showcases, and campaign content built for broadcast and social. Cinematic in every frame.</p>
+      <div class="svc-tags">
+        <span class="svc-tag">Commercials</span>
+        <span class="svc-tag">Brand films</span>
+        <span class="svc-tag">Product</span>
+      </div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">02</div>
+      <h3 class="svc-name">Short-form Content</h3>
+      <p class="svc-desc">Reels, TikToks, YouTube Shorts — platform-native storytelling designed to stop the scroll, build audience, and convert.</p>
+      <div class="svc-tags">
+        <span class="svc-tag">Reels</span>
+        <span class="svc-tag">TikTok</span>
+        <span class="svc-tag">Scripting</span>
+      </div>
+    </div>
+    <div class="svc">
+      <div class="svc-num">03</div>
+      <h3 class="svc-name">Post Production</h3>
+      <p class="svc-desc">Colour grading, sound design, motion graphics, and full edit services. From raw footage to broadcast-ready delivery.</p>
+      <div class="svc-tags">
+        <span class="svc-tag">Colour grade</span>
+        <span class="svc-tag">Motion GFX</span>
+        <span class="svc-tag">Edit &amp; delivery</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ════════════════════════════════ -->
+<section id="contact" class="reveal">
+  <div class="contact-bg-word" aria-hidden="true">LET'S WORK</div>
+  <div class="contact-inner">
+    <p class="contact-eyebrow">Open to new work — London &amp; beyond</p>
+    <h2 class="contact-heading">GOT A<br>PROJECT <span>IN MIND?</span></h2>
+    <p class="contact-sub">Drop me a line. I'm available for commercial projects, retained partnerships, and in-house or agency roles.</p>
+    <a href="mailto:hello@carlosmartinezvisuals.com" class="contact-email">HELLO@CARLOSMARTINEZVISUALS.COM</a>
+    <ul class="contact-socials">
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">LinkedIn</a></li>
+      <li><a href="#">Vimeo</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Carlos Martinez</span>
+  <span>London, UK · English / Español</span>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('ring');
+  let mx=0,my=0,rx=0,ry=0;
+
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+  });
+  (function loop(){
+    rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.querySelectorAll('a,.reel-btn,.dot,.svc,.work-item,.pill').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      cursor.style.transform='translate(-50%,-50%) scale(2.5)';
+      ring.style.opacity='0.12';
+    });
+    el.addEventListener('mouseleave',()=>{
+      cursor.style.transform='translate(-50%,-50%) scale(1)';
+      ring.style.opacity='1';
+    });
+  });
+
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll',()=>{
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Active nav link
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const io2 = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(a=>a.classList.remove('active'));
+        const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if(active) active.classList.add('active');
+      }
+    });
+  },{threshold:0.4});
+  sections.forEach(s=>io2.observe(s));
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io3 = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:0.08});
+  reveals.forEach(r=>io3.observe(r));
+
+  // Dots
+  document.querySelectorAll('.dot').forEach((d,i,all)=>{
+    d.addEventListener('click',()=>{
+      all.forEach(x=>x.classList.remove('active'));
+      d.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
